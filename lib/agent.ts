@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold, GenerativeModel } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
@@ -37,7 +37,7 @@ const CONTENT_FRAMEWORKS = [
   "Case study format with data-driven insights"
 ];
 
-async function advancedGenerateContent(model: any, prompt: string, retries: number = 3): Promise<string> {
+async function advancedGenerateContent(model: GenerativeModel, prompt: string, retries: number = 3): Promise<string> {
   let attempt = 0;
   let delay = 2000;
 
@@ -45,10 +45,11 @@ async function advancedGenerateContent(model: any, prompt: string, retries: numb
     try {
       const result = await model.generateContent(prompt);
       return result.response.text();
-    } catch (err: any) {
+    } catch (err: unknown) {
       attempt++;
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       
-      if (err.message.includes("503") || err.message.includes("429")) {
+      if (errorMessage.includes("503") || errorMessage.includes("429")) {
         console.warn(`Model overloaded (attempt ${attempt}/${retries}), retrying in ${delay}ms...`);
         await new Promise(res => setTimeout(res, delay));
         delay *= 2;
@@ -75,7 +76,7 @@ function validateContentQuality(content: string): boolean {
   return qualityIndicators.every(indicator => indicator === true);
 }
 
-async function generateSmartHashtags(model: any, content: string): Promise<string[]> {
+async function generateSmartHashtags(model: GenerativeModel, content: string): Promise<string[]> {
   const hashtagPrompt = `
   Analyze the following LinkedIn post content and generate 3-5 highly relevant, professional hashtags.
   Focus on industry-specific tags, trending topics, and engagement-driven hashtags.
@@ -87,18 +88,24 @@ async function generateSmartHashtags(model: any, content: string): Promise<strin
 
   try {
     const response = await model.generateContent(hashtagPrompt);
-    const hashtags = response.response.text().split(',').map(tag => tag.trim()).filter(tag => tag);
+    const hashtags = response.response.text().split(',').map((tag: string) => tag.trim()).filter((tag: string) => tag);
     return hashtags.slice(0, 5);
-  } catch (error) {
+  } catch (_error) {
     console.warn('Hashtag generation failed, using fallback tags');
     return ['Leadership', 'ProfessionalGrowth', 'CareerDevelopment'];
   }
 }
 
+export interface GeneratePostsResult {
+  posts: string[];
+  tokenUsage?: number;
+  hashtags?: string[][];
+}
+
 export async function generatePosts(
   topic: string,
   tone: string = 'professional'
-): Promise<{ posts: string[]; tokenUsage?: number; hashtags?: string[][] }> {
+): Promise<GeneratePostsResult> {
 
   if (!process.env.GEMINI_API_KEY) {
     throw new Error('GEMINI_API_KEY environment variable is not set');
@@ -219,14 +226,16 @@ export async function generatePosts(
       hashtags: hashtags.slice(0, 3)
     };
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Advanced content generation failed:', error);
 
-    if (error.message.includes('safety') || error.message.includes('blocked')) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    
+    if (errorMessage.includes('safety') || errorMessage.includes('blocked')) {
       throw new Error('Content safety protocols activated. Please refine your topic or tone.');
     }
 
-    if (error.message.includes('unavailable')) {
+    if (errorMessage.includes('unavailable')) {
       throw new Error('AI service temporarily unavailable. Please try again in a moment.');
     }
 
@@ -234,10 +243,16 @@ export async function generatePosts(
   }
 }
 
+export interface PremiumPostResult {
+  post: string;
+  hashtags: string[];
+  tokenUsage?: number;
+}
+
 export async function generatePremiumPost(
   topic: string,
   style: keyof typeof PERSONAS = 'executive'
-): Promise<{ post: string; hashtags: string[]; tokenUsage?: number }> {
+): Promise<PremiumPostResult> {
   
   const model = genAI.getGenerativeModel({
     model: "gemini-2.5-pro",
@@ -283,7 +298,7 @@ export async function generatePremiumPost(
       tokenUsage: Math.floor(post.length / 3.5)
     };
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Premium post generation failed:', error);
     throw new Error('Could not generate premium content. Please try again.');
   }

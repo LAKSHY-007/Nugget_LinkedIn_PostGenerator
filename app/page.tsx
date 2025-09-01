@@ -21,20 +21,24 @@ export default function Home() {
     setResults(null);
 
     try {
-      const response = await fetch('/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ topic, tone }),
-      });
+  const response = await fetch('/api/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ topic, tone }),
+  });
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Neural network optimization required. Please try again.');
-      setResults(data);
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setIsGenerating(false);
-    }
+  const data = await response.json();
+  if (!response.ok) {
+    const errorMessage = typeof data.error === 'string' ? data.error : 'Neural network optimization required. Please try again.';
+    throw new Error(errorMessage);
+  }
+  setResults(data);
+} catch (err: unknown) {
+  const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
+  setError(errorMessage);
+} finally {
+  setIsGenerating(false);
+}
   };
 
   const copyToClipboard = useCallback((text: string) => {
