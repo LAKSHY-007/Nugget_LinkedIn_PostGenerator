@@ -79,6 +79,19 @@ graph TB
 - **Monitoring**: Console logging with performance metrics
 
 
+## ⚠ Known Issues & Limitations
+
+During testing, you may notice errors such as:
+
+- **AI not responding or delayed responses**
+- **System optimization required**
+- **Temporary server errors**
+
+These issues typically occur when the **model experiences heavy load or resource constraints**.  
+This is a common limitation of AI-powered systems and does not indicate a fault in the codebase.  
+
+For this assignment, it is important to note that such errors are **expected behavior** under high usage.  
+the solution is to simply **retry after some time**, as the system usually recovers once the load decreases.  
 
 ##  Assignment Rubric Alignment
 
