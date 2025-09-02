@@ -48,6 +48,10 @@ graph TB
     G --> H
 ```
 
+##  Live Deployment  
+[Click here to view the live app on Vercel](https://nugget-linked-in-post-generator-19ubgy34i.vercel.app)
+
+
 ##  Key Features
 
 ###  Intelligent Persona System
