@@ -138,4 +138,7 @@ bun dev
 ## Screenshots
 <img width="1809" height="913" alt="S1" src="https://github.com/user-attachments/assets/78cf3727-f684-44ee-918b-5e8fa3e1a3d5" />
 <img width="1797" height="792" alt="S2" src="https://github.com/user-attachments/assets/a9e51949-279f-4fb8-b65c-6d8ee0dfdb96" />
+<img width="1815" height="857" alt="S3" src="https://github.com/user-attachments/assets/4931391e-c830-43b8-ab26-25fca995e803" />
+<img width="1757" height="844" alt="S4" src="https://github.com/user-attachments/assets/b5614b8e-426b-4472-a3cc-a74448bcd72c" />
+
 
