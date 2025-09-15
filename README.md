@@ -7,10 +7,6 @@
 [![Gemini](https://img.shields.io/badge/Gemini-2.5--Pro-blue?style=for-the-badge&logo=google)](https://deepmind.google/technologies/gemini/)
 [![Vercel](https://img.shields.io/badge/Deployed-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com)
 
-##  Assignment Alignment
-
-This project directly addresses the **Internship Assignment - AI Topic LinkedIn Post Generator** requirements:
-
 ###  MVP Requirements Met
 
 | Requirement | Implementation |
@@ -97,21 +93,7 @@ This is a common limitation of AI-powered systems and does not indicate a fault 
 For this assignment, it is important to note that such errors are **expected behavior** under high usage.  
 the solution is to simply **retry after some time**, as the system usually recovers once the load decreases.  
 
-##  Assignment Rubric Alignment
 
-###  Core Requirements (Fully Met)
-- ✅ Deployed working application at public URL  
-- ✅ Topic input with generate functionality  
-- ✅ ≥3 post options returned per generation  
-- ✅ AI agent with multi-step behavior  
-- ✅ Professional output rendering  
-
-###  Advanced Features (Exceeded)
--  Multiple professional personas  
--  Intelligent hashtag generation  
--  Content quality validation  
--  Performance metrics display  
--  Production-grade error handling  
 
 ### 🔮 Future Enhancements
 With more time, I would implement:  
